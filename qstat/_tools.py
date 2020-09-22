@@ -34,7 +34,7 @@ def qstat2xml(qstat_path='qstat', xml_option='-xml'):
         The xml stdout string of the 'qstat -xml' call.
     """
     try:
-        qstatxml = sp.check_output([qstat_path, xml_option], stderr=sp.STDOUT)
+        qstatxml = sp.check_output([qstat_path, xml_option, '-r'], stderr=sp.STDOUT)
     except sp.CalledProcessError as e:
         print('qstat returncode:', e.returncode)
         print('qstat std output:', e.output)
@@ -60,7 +60,7 @@ def xml2queue_and_job_info(qstatxml):
     job_info : list
         A list of jobs in 'job_info'.
     """
-    x = xmltodict.parse(qstatxml)
+    x = xmltodict.parse(qstatxml, force_list={'job_list'})
     queue_info = []
     if x['job_info']['queue_info'] is not None:
         for job in x['job_info']['queue_info']['job_list']:
